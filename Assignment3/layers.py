@@ -125,18 +125,22 @@ class ReLULayer:
 
 
 class FullyConnectedLayer:
-    def __init__(self, n_input, n_output):
-        self.W = Param(0.001 * np.random.randn(n_input, n_output))
-        self.B = Param(0.001 * np.random.randn(1, n_output))
+   def __init__(self, n_input, n_output):
+        self.W = 0.001 * np.random.randn(n_input, n_output)
+        self.B = 0.001 * np.random.randn(1, n_output)
+        #self.W = np.linspace(-0.2, 0.3, num=weight_size).reshape(np.prod(input_shape), output_dim)
+        #self.B = np.linspace(-0.3, 0.1, num=output_dim)
         self.X = None
 
     def forward(self, X):
         # TODO: Implement forward pass
         # Your final implementation shouldn't have any loops
-        raise Exception("Not implemented!")
+        out = X.reshape(X.shape[0], -1).dot(self.W) + self.B
+        cache = X
+        return out, cache
 
 
-    def backward(self, d_out):
+    def backward(self, d_out, cache):
         """
         Backward pass
         Computes gradient with respect to input and
@@ -156,7 +160,11 @@ class FullyConnectedLayer:
         # It should be pretty similar to linear classifier from
         # the previous assignment
 
-        raise Exception("Not implemented!")
+        #raise Exception("Not implemented!")
+
+        X = cache
+        
+        d_input = d_out.dot(self.W.T).reshape(X.shape)
 
         return d_input
 
