@@ -59,14 +59,14 @@ def check_layer_gradient(layer, x, delta=1e-5, tol=1e-4):
     Returns:
       bool indicating whether gradients match or not
     """
-    output = layer.forward(x)
+    output, cashe = layer.forward(x)
     output_weight = np.random.randn(*output.shape)
 
     def helper_func(x):
-        output = layer.forward(x)
+        output, cashe = layer.forward(x)
         loss = np.sum(output * output_weight)
         d_out = np.ones_like(output) * output_weight
-        grad = layer.backward(d_out)
+        grad = layer.backward(d_out, cashe)
         return loss, grad
 
     return check_gradient(helper_func, x, delta, tol)
