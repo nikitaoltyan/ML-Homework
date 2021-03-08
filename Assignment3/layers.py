@@ -92,9 +92,10 @@ class ReLULayer:
         # TODO: Implement forward pass
         # Hint: you'll need to save some information about X
         # to use it later in the backward pass
-        raise Exception("Not implemented!")
-
-        return X
+        #raise Exception("Not implemented!")
+        cache = X
+        X = np.maximum(X, 0)
+        return X, cache
 
     def backward(self, d_out):
         """
@@ -108,7 +109,13 @@ class ReLULayer:
         """
         # TODO: Implement backward pass
         # Your final implementation shouldn't have any loops
-        raise Exception("Not implemented!")
+        #raise Exception("Not implemented!")
+
+        X = cashe
+
+        out = np.maximum(0, X) # ReLU again
+        out[out > 0 ] = 1
+        d_out = out * d_out
 
         return d_out
 
