@@ -135,8 +135,14 @@ class FullyConnectedLayer:
    def forward(self, X):
         # TODO: Implement forward pass
         # Your final implementation shouldn't have any loops
-        out = X.reshape(X.shape[0], -1).dot(self.W) + self.B
         cache = X
+        Xw = X.dot(self.W.value)
+        z = np.add(Xw, self.B.value)
+
+        out = z
+        self.mask = out < 0
+        out[self.mask] = 0
+
         return out, cache
 
 
@@ -162,9 +168,12 @@ class FullyConnectedLayer:
 
         #raise Exception("Not implemented!")
 
-        X = cache
-        
-        d_input = d_out.dot(self.W.T).reshape(X.shape)
+        d_out[self.mask] = 0
+
+        self.B.grad += d_out.sum(axis = 0)   
+        self.W.grad += cache.transpose().dot(d_out) 
+
+        d_input = d_out.dot(self.W.value.transpose())
 
         return d_input
 
