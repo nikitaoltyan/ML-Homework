@@ -132,7 +132,7 @@ class FullyConnectedLayer:
         #self.B = np.linspace(-0.3, 0.1, num=output_dim)
         self.X = None
 
-    def forward(self, X):
+   def forward(self, X):
         # TODO: Implement forward pass
         # Your final implementation shouldn't have any loops
         out = X.reshape(X.shape[0], -1).dot(self.W) + self.B
@@ -140,7 +140,7 @@ class FullyConnectedLayer:
         return out, cache
 
 
-    def backward(self, d_out, cache):
+   def backward(self, d_out, cache):
         """
         Backward pass
         Computes gradient with respect to input and
@@ -168,5 +168,5 @@ class FullyConnectedLayer:
 
         return d_input
 
-    def params(self):
+   def params(self):
         return {'W': self.W, 'B': self.B}
