@@ -89,15 +89,15 @@ def check_layer_param_gradient(layer, x,
     param = layer.params()[param_name]
     initial_w = param.value
 
-    output = layer.forward(x)
+    output, cache = layer.forward(x)
     output_weight = np.random.randn(*output.shape)
 
     def helper_func(w):
         param.value = w
-        output = layer.forward(x)
+        output, cache = layer.forward(x)
         loss = np.sum(output * output_weight)
         d_out = np.ones_like(output) * output_weight
-        layer.backward(d_out)
+        layer.backward(d_out, cache)
         grad = param.grad
         return loss, grad
 
