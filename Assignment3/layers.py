@@ -126,10 +126,8 @@ class ReLULayer:
 
 class FullyConnectedLayer:
    def __init__(self, n_input, n_output):
-        self.W = 0.001 * np.random.randn(n_input, n_output)
-        self.B = 0.001 * np.random.randn(1, n_output)
-        #self.W = np.linspace(-0.2, 0.3, num=weight_size).reshape(np.prod(input_shape), output_dim)
-        #self.B = np.linspace(-0.3, 0.1, num=output_dim)
+        self.W = Param(0.001 * np.random.randn(n_input, n_output))
+        self.B = Param(0.001 * np.random.randn(1, n_output))
         self.X = None
 
    def forward(self, X):
