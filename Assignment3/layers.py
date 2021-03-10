@@ -97,7 +97,7 @@ class ReLULayer:
         X = np.maximum(X, 0)
         return X, cache
 
-    def backward(self, d_out):
+    def backward(self, d_out, cashe):
         """
         Backward pass
         Arguments:
