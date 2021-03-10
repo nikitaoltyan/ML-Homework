@@ -86,23 +86,22 @@ def check_layer_param_gradient(layer, x,
     Returns:
       bool indicating whether gradients match or not
     """
-    #param = layer.params()[param_name]
-    #initial_w = param
+    param = layer.params()[param_name]
+    initial_w = param.value
 
     output, cache = layer.forward(x)
     output_weight = np.random.randn(*output.shape)
 
-    def helper_func(x):
-        #param.value = w
-        #layer.W = param.value
+    def helper_func(w):
+        param.value = w
         output, cache = layer.forward(x)
         loss = np.sum(output * output_weight)
         d_out = np.ones_like(output) * output_weight
-        grad = layer.backward(d_out, cache)
-        #grad = param.grad
+        layer.backward(d_out, cache)
+        grad = param.grad
         return loss, grad
 
-    return check_gradient(helper_func, x, delta, tol)
+    return check_gradient(helper_func, initial_w, delta, tol)
 
 
 def check_model_gradient(model, X, y,
