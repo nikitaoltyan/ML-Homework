@@ -99,7 +99,8 @@ class Trainer:
                 # use model to generate loss and gradients for all
                 # the params
 
-                raise Exception("Not implemented!")
+                print(batch_indices)
+                #raise Exception("Not implemented!")
 
                 for param_name, param in self.model.params().items():
                     optimizer = self.optimizers[param_name]
