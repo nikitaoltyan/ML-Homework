@@ -144,7 +144,7 @@ class FullyConnectedLayer:
         return out, cache
 
 
-   def backward(self, d_out, cache):
+   def backward(self, d_out, cache=self.X):
         """
         Backward pass
         Computes gradient with respect to input and
