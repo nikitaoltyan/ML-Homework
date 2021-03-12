@@ -19,9 +19,8 @@ class TwoLayerNet:
         # TODO Create necessary layers
         #raise Exception("Not implemented!")
         self.layer1 = FullyConnectedLayer(n_input, hidden_layer_size)
-        self.layer2 = FullyConnectedLayer(n_input, n_input)
+        self.layer2 = ReLULayer()
         self.layer3 = FullyConnectedLayer(hidden_layer_size, n_output)
-        self.layers = []
 
 
     def compute_loss_and_gradients(self, X, y):
@@ -36,17 +35,33 @@ class TwoLayerNet:
         # clear parameter gradients aggregated from the previous pass
         # TODO Set parameter gradient to zeros
         # Hint: using self.params() might be useful!
-        self.W = 0
-        self.B = 0
+        params = self.params()
+
+        for k in params:
+          param = params[k]
+          param.grad = np.zeros_like(param.grad)
 
         # TODO Compute loss and fill param gradients
         # by running forward and backward passes through the model
-        layer = FullyConnectedLayer(X.shape[1],X.shape[0])
-        print(layer.forward(X))
 
+        fw1, cache1 = self.layer1.forward(X)
+        fw2, cache2 = self.layer2.forward(fw1)
+        fw3, cache3 = self.layer3.forward(fw2)
+
+        loss, pred = softmax_with_cross_entropy(fw3, y)
+        
+        bw1 = self.layer3.backward(pred, cache3)
+        bw2 = self.layer2.backward(bw1, cache2)
+        bw3 = self.layer1.backward(bw2, cache1)
+        
         # After that, implement l2 regularization on all params
         # Hint: self.params() is useful again!
-        #raise Exception("Not implemented!")
+        # raise Exception("Not implemented!")
+
+        for k in params:
+          param = params[k]
+          loss += l2_regularization(param.value, self.reg)[0]
+          param.grad += l2_regularization(param.value, self.reg)[1]
 
         return loss
 
@@ -67,4 +82,5 @@ class TwoLayerNet:
         return pred
 
     def params(self):
-        return {'W': self.W, 'B': self.B}
+        return {'W1': self.layer1.W, 'B1': self.layer1.B, 
+                'W3': self.layer3.W, 'B3': self.layer3.B}
