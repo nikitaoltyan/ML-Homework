@@ -18,6 +18,9 @@ class TwoLayerNet:
         self.reg = reg
         # TODO Create necessary layers
         #raise Exception("Not implemented!")
+        self.layer1 = FullyConnectedLayer(n_input, hidden_layer_size)
+        self.layer2 = FullyConnectedLayer(n_input, n_input)
+        self.layer3 = FullyConnectedLayer(hidden_layer_size, n_output)
         self.layers = []
 
 
