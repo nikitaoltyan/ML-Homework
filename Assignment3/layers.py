@@ -109,15 +109,14 @@ class ReLULayer:
         """
         # TODO: Implement backward pass
         # Your final implementation shouldn't have any loops
-        #raise Exception("Not implemented!")
+        # raise Exception("Not implemented!")
 
         X = cashe
 
-        out = np.maximum(0, X) # ReLU again
-        out[out > 0 ] = 1
-        d_out = out * d_out
+        mask = X > 0
+        d_in =  mask * d_out
 
-        return d_out
+        return d_in
 
     def params(self):
         # ReLU Doesn't have any parameters
