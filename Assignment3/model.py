@@ -78,7 +78,14 @@ class TwoLayerNet:
         # can be reused
         pred = np.zeros(X.shape[0], np.int)
 
-        raise Exception("Not implemented!")
+        fw1, cache1 = self.layer1.forward(X)
+        fw2, cache2 = self.layer2.forward(fw1)
+        fw3, cache3 = self.layer3.forward(fw2)
+        prob = (softmax(fw3)
+        print(0)
+        pred[pred==0] = np.argmax(prob)
+        print(pred)
+        
         return pred
 
     def params(self):
