@@ -134,11 +134,7 @@ class FullyConnectedLayer:
         # Your final implementation shouldn't have any loops
         cache = X
         Xw = X.dot(self.W.value)
-        z = np.add(Xw, self.B.value)
-
-        out = z
-        self.mask = out < 0
-        out[self.mask] = 0
+        out = np.add(Xw, self.B.value)
 
         return out, cache
 
@@ -165,12 +161,15 @@ class FullyConnectedLayer:
 
         #raise Exception("Not implemented!")
 
-        d_out[self.mask] = 0
+        xT = cache.T
+        ones = np.ones((xT.shape[1], 1)).T
 
-        self.B.grad += d_out.sum(axis = 0)   
-        self.W.grad += cache.transpose().dot(d_out) 
+        dB = np.dot(ones, d_out)
 
-        d_input = d_out.dot(self.W.value.transpose())
+        self.B.grad += dB   
+        self.W.grad += xT.dot(d_out) 
+
+        d_input = d_out.dot(self.W.value.T)
 
         return d_input
 
