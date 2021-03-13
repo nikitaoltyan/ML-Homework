@@ -110,7 +110,7 @@ class Trainer:
                 batch_losses.append(loss)
 
             # TODO: Implement learning rate decay
-            alpha0 = 0.2 # as Andrew Ng sugested
+            alpha0 = 0.2 # as Andrew Ng suggested
             self.learning_rate = alpha0/(1+self.learning_rate_decay*epoch)
 
             ave_loss = np.mean(batch_losses)
