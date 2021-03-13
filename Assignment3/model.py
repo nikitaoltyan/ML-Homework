@@ -82,9 +82,7 @@ class TwoLayerNet:
         fw2, cache2 = self.layer2.forward(fw1)
         fw3, cache3 = self.layer3.forward(fw2)
         prob = (softmax(fw3)
-        print(0)
         pred[pred==0] = np.argmax(prob)
-        print(pred)
         
         return pred
 
