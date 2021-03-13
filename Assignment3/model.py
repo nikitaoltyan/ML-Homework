@@ -37,8 +37,8 @@ class TwoLayerNet:
         # Hint: using self.params() might be useful!
         params = self.params()
 
-        for k in params:
-          param = params[k]
+        for par in params:
+          param = params[par]
           param.grad = np.zeros_like(param.grad)
 
         # TODO Compute loss and fill param gradients
@@ -58,8 +58,8 @@ class TwoLayerNet:
         # Hint: self.params() is useful again!
         # raise Exception("Not implemented!")
 
-        for k in params:
-          param = params[k]
+        for par in params:
+          param = params[par]
           loss += l2_regularization(param.value, self.reg)[0]
           param.grad += l2_regularization(param.value, self.reg)[1]
 
