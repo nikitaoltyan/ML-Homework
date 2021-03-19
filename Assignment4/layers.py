@@ -142,6 +142,12 @@ class ConvolutionalLayer:
     def forward(self, X):
         batch_size, height, width, channels = X.shape
 
+        # Add paddings (zeros)
+        X = np.insert(X, [0], [[0]], axis=2)
+        X = np.insert(X, X.shape[2], [[0]], axis=2)
+        X = np.insert(X, [0], [[0]], axis=1)
+        X = np.insert(X, [X.shape[1]], [[0]], axis=1)
+        
         out_height = 0
         out_width = 0
         
