@@ -254,7 +254,11 @@ class MaxPoolingLayer:
                         y_source = y * self.stride
                         x_source = x * self.stride
                         pool = X[batch, y_source:y_source+self.pool_size, x_source:x_source+self.pool_size, channel]
-                        maximum = np.max(pool)
+                        try:
+                          maximum = np.max(pool)
+                        except ValueError:  #raised if `pool` is empty.
+                          pass
+                        # maximum = np.max(pool)
                         result[batch, y, x, channel] = maximum
                 #result[:, y, x, :] = Xk.dot(W) + self.B.value
         return result
