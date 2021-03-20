@@ -272,7 +272,7 @@ class MaxPoolingLayer:
         batch_size, height, width, in_channels = X.shape
         _, out_height, out_width, out_channels = d_out.shape
         
-        d_X = np.zeros_like(X)
+        d_input = np.zeros_like(X)
         
         for batch in range(batch_size):
             for y in range(out_height):
@@ -285,14 +285,18 @@ class MaxPoolingLayer:
                                  y_source:np.minimum(y_source+pool_size, height),
                                  x_source:np.minimum(x_source+pool_size, width), channel]
                         
-                        maximum = np.max(pool)
+                        try:
+                          maximum = np.max(pool)
+                        except ValueError:  #raised if `pool` is empty.
+                          pass
+                        # maximum = np.max(pool)
                         max_count = np.count_nonzero(pool == maximum)
                         argmax = np.argwhere(pool==maximum)
                         mask[argmax[:,0], argmax[:,1]] = d_out[batch, y, x, channel] / max_count
                         
-                        d_X[batch, y_source:y_source+pool_size, x_source:x_source+pool_size, channel] += mask
+                        d_input[batch, y_source:y_source+pool_size, x_source:x_source+pool_size, channel] += mask
                         
-        return d_X
+        return d_input
 
     def params(self):
         return {}
