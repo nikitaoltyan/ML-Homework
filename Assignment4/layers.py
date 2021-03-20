@@ -142,26 +142,31 @@ class ConvolutionalLayer:
     def forward(self, X):
         batch_size, height, width, channels = X.shape
 
-        # Add paddings (zeros)
-        X = np.insert(X, [0], [[0]], axis=2)
-        X = np.insert(X, X.shape[2], [[0]], axis=2)
-        X = np.insert(X, [0], [[0]], axis=1)
-        X = np.insert(X, [X.shape[1]], [[0]], axis=1)
-        
-        out_height = 0
-        out_width = 0
-        
+        # Add paddings (zeros)        
+        padding = self.padding
+        if padding > 0:
+          X = np.insert(X, [0], [padding], axis=2)
+          X = np.insert(X, X.shape[2], [padding], axis=2)
+          X = np.insert(X, [0], [padding], axis=1)
+          X = np.insert(X, X.shape[1], [padding], axis=1)
+
+        out_height = height - (self.filter_size - 1)
+        out_width = width - (self.filter_size - 1)
+        result = np.zeros((batch_size, out_height, out_width, self.out_channels))
         # TODO: Implement forward pass
         # Hint: setup variables that hold the result
         # and one x/y location at a time in the loop below
         
         # It's ok to use loops for going over width and height
         # but try to avoid having any other loops
+        W = self.W.value.reshape(-1, self.out_channels)
         for y in range(out_height):
             for x in range(out_width):
                 # TODO: Implement forward pass for specific location
-                pass
-        raise Exception("Not implemented!")
+                Xk = X[:, y:y+self.filter_size, x:x+self.filter_size, :]
+                Xk = Xk.reshape((batch_size, -1))
+                result[:, y, x, :] = Xk.dot(W) + self.B.value
+        return result
 
 
     def backward(self, d_out):
