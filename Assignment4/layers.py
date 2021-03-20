@@ -175,11 +175,19 @@ class ConvolutionalLayer:
         # You already know how to backprop through that
         # when you implemented FullyConnectedLayer
         # Just do it the same number of times and accumulate gradients
-
         batch_size, height, width, channels = X.shape
         _, out_height, out_width, out_channels = d_out.shape
 
         # TODO: Implement backward pass
+        X = self.X
+        padding = self.padding
+        d_input = np.zeros_like(X)
+        self.W.grad = np.zeros_like(self.W.value)
+        self.B.grad = np.zeros_like(self.B.value)
+        W = self.W.value.reshape((-1, out_channels))
+
+
+
         # Same as forward, setup variables of the right shape that
         # aggregate input gradient and fill them for every location
         # of the output
@@ -192,7 +200,9 @@ class ConvolutionalLayer:
                 # the parameters (W and B)
                 pass
 
-        raise Exception("Not implemented!")
+        # Delete padding if exists.
+        d_input = d_input[:, padding:height-padding, padding:width-padding, :]
+        return d_input
 
     def params(self):
         return { 'W': self.W, 'B': self.B }
