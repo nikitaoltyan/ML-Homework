@@ -299,16 +299,19 @@ class Flattener:
         self.X_shape = None
 
     def forward(self, X):
+        self.X_shape = X.shape
         batch_size, height, width, channels = X.shape
 
         # TODO: Implement forward pass
         # Layer should return array with dimensions
         # [batch_size, hight*width*channels]
-        raise Exception("Not implemented!")
+        return X.reshape((batch_size, -1))
 
     def backward(self, d_out):
         # TODO: Implement backward pass
-        raise Exception("Not implemented!")
+        batch_size, height, width, channels = self.X_shape
+        
+        return d_out.reshape((batch_size, height, width, channels))
 
     def params(self):
         # No params!
