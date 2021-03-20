@@ -240,13 +240,26 @@ class MaxPoolingLayer:
 
     def forward(self, X):
         batch_size, height, width, channels = X.shape
+        self.X = X
         # TODO: Implement maxpool forward pass
         # Hint: Similarly to Conv layer, loop on
         # output x/y dimension
-        raise Exception("Not implemented!")
+        out_height = int(height/2)
+        out_width = int(width/2)
+
+        result = np.zeros((batch_size, out_height, out_width, channels))
+        for y in range(out_height):
+            for x in range(out_width):
+                # TODO: Implement forward pass for specific location
+                Xk = X[:, y:y+self.filter_size, x:x+self.filter_size, :]
+                Xk = Xk.reshape((batch_size, -1))
+                result[:, y, x, :] = Xk.dot(W) + self.B.value
+        return result
+        
 
     def backward(self, d_out):
         # TODO: Implement maxpool backward pass
+        X = self.X
         batch_size, height, width, channels = self.X.shape
         raise Exception("Not implemented!")
 
