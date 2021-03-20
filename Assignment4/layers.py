@@ -175,12 +175,12 @@ class ConvolutionalLayer:
         # You already know how to backprop through that
         # when you implemented FullyConnectedLayer
         # Just do it the same number of times and accumulate gradients
+        X = self.X
+        padding = self.padding
         batch_size, height, width, channels = X.shape
         _, out_height, out_width, out_channels = d_out.shape
 
         # TODO: Implement backward pass
-        X = self.X
-        padding = self.padding
         d_input = np.zeros_like(X)
         self.W.grad = np.zeros_like(self.W.value)
         self.B.grad = np.zeros_like(self.B.value)
@@ -193,12 +193,30 @@ class ConvolutionalLayer:
         # of the output
 
         # Try to avoid having any other loops here too
+        filter_size = self.filter_size
         for y in range(out_height):
             for x in range(out_width):
                 # TODO: Implement backward pass for specific location
                 # Aggregate gradients for both the input and
                 # the parameters (W and B)
-                pass
+                point = d_out[:, y, x, :]
+                
+                X_after_kernel = X[:, y:y+filter_size, x:x+filter_size, :]
+                X_after_kernel_reshaped = X_after_kernel.reshape((batch_size, -1))
+                X_t = X_after_kernel_reshaped.T
+
+                d_W = X_t.dot(point)
+                d_W = d_W.reshape((filter_size, filter_size, self.in_channels, out_channels))
+                
+                ones_t = np.ones((batch_size, )).T
+                d_B = ones_t.dot(point)
+                
+                d_X_before_kernel = point.dot(W.T)
+                d_X_before_kernel = d_X_before_kernel.reshape((batch_size, filter_size, filter_size, self.in_channels))
+                
+                self.W.grad += d_W
+                self.B.grad += d_B
+                d_input[:, y:y+filter_size, x:x+filter_size, :] += d_X_before_kernel
 
         # Delete padding if exists.
         d_input = d_input[:, padding:height-padding, padding:width-padding, :]
