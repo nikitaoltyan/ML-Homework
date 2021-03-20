@@ -135,8 +135,8 @@ class ConvolutionalLayer:
         )
 
         self.B = Param(np.zeros(out_channels))
-
         self.padding = padding
+        self.X = None
 
 
     def forward(self, X):
@@ -150,6 +150,7 @@ class ConvolutionalLayer:
           X = np.insert(X, [0], [padding], axis=1)
           X = np.insert(X, X.shape[1], [padding], axis=1)
 
+        self.X = X
         out_height = height - (self.filter_size - 1)
         out_width = width - (self.filter_size - 1)
         result = np.zeros((batch_size, out_height, out_width, self.out_channels))
