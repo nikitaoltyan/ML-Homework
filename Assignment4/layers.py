@@ -246,22 +246,49 @@ class MaxPoolingLayer:
         # output x/y dimension
         out_height = int(height/2)
         out_width = int(width/2)
-
         result = np.zeros((batch_size, out_height, out_width, channels))
-        for y in range(out_height):
-            for x in range(out_width):
-                # TODO: Implement forward pass for specific location
-                Xk = X[:, y:y+self.filter_size, x:x+self.filter_size, :]
-                Xk = Xk.reshape((batch_size, -1))
-                result[:, y, x, :] = Xk.dot(W) + self.B.value
+        for batch in range(batch_size):
+            for y in range(out_height):
+                for x in range(out_width):
+                    for channel in range(channels):
+                        y_source = y * self.stride
+                        x_source = x * self.stride
+                        pool = X[batch, y_source:y_source+self.pool_size, x_source:x_source+self.pool_size, channel]
+                        maximum = np.max(pool)
+                        result[batch, y, x, channel] = maximum
+                #result[:, y, x, :] = Xk.dot(W) + self.B.value
         return result
         
 
     def backward(self, d_out):
         # TODO: Implement maxpool backward pass
+        pool_size = self.pool_size
+        stride = self.stride
         X = self.X
-        batch_size, height, width, channels = self.X.shape
-        raise Exception("Not implemented!")
+        batch_size, height, width, in_channels = X.shape
+        _, out_height, out_width, out_channels = d_out.shape
+        
+        d_X = np.zeros_like(X)
+        
+        for batch in range(batch_size):
+            for y in range(out_height):
+                for x in range(out_width):
+                    for channel in range(in_channels):
+                        mask = np.zeros((pool_size, pool_size))
+                        y_source = y * stride
+                        x_source = x * stride
+                        pool = X[batch,
+                                 y_source:np.minimum(y_source+pool_size, height),
+                                 x_source:np.minimum(x_source+pool_size, width), channel]
+                        
+                        maximum = np.max(pool)
+                        max_count = np.count_nonzero(pool == maximum)
+                        argmax = np.argwhere(pool==maximum)
+                        mask[argmax[:,0], argmax[:,1]] = d_out[batch, y, x, channel] / max_count
+                        
+                        d_X[batch, y_source:y_source+pool_size, x_source:x_source+pool_size, channel] += mask
+                        
+        return d_X
 
     def params(self):
         return {}
