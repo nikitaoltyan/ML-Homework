@@ -16,6 +16,20 @@ def l2_regularization(W, reg_strength):
     return loss, grad
 
 
+
+def softmax(predictions):
+    # Copied softmax from previous assignment.
+    z = predictions.copy()
+    if predictions.ndim == 1:
+        z = z.reshape(1, -1)
+    z -= np.max(z, axis=1).reshape(-1, 1)
+    exps = np.exp(z)
+    sums = np.sum(exps, axis=1)
+    probs = exps / sums.reshape(-1, 1)
+
+    return probs
+
+
 def softmax_with_cross_entropy(predictions, target_index):
     '''
     Computes softmax and cross-entropy loss for model predictions,
