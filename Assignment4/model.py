@@ -34,7 +34,7 @@ class ConvNet:
         padding = 1
         kernel_size = 3
 
-        self.fcl_input = int(height/4)**2
+        self.fcl_input = int(height/4)
         self.n_output_classes = n_output_classes
 
         self.layer1 = ConvolutionalLayer(n_channels, conv1_channels, kernel_size, padding)
@@ -66,10 +66,6 @@ class ConvNet:
         for par in params:
           param = params[par]
           param.grad = np.zeros_like(param.grad)
-
-        print(f"Input X shape: {X.shape}")
-        self.fcl_input *= X.shape[0]
-        self.layer8 = FullyConnectedLayer(self.fcl_input, self.n_output_classes)
         
         fw1 = self.layer1.forward(X)
         fw2 = self.layer2.forward(fw1)
@@ -81,7 +77,6 @@ class ConvNet:
         fw8 = self.layer8.forward(fw7)
 
         loss, pred = softmax_with_cross_entropy(fw8, y)
-        print(loss, pred)
         
         bw1 = self.layer8.backward(pred)
         bw2 = self.layer7.backward(bw1)
@@ -92,9 +87,9 @@ class ConvNet:
         bw7 = self.layer2.backward(bw6)
         bw8 = self.layer1.backward(bw6)
 
-        for par in params:
-          param = params[par]
-          param.grad += l2_regularization(param.value, self.reg)[1]
+        #for par in params:
+        #  param = params[par]
+        #  param.grad += l2_regularization(param.value, self.reg)[1]
 
         return loss
 
