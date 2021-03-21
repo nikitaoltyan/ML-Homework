@@ -85,7 +85,7 @@ class ConvNet:
         bw5 = self.layer4.backward(bw4)
         bw6 = self.layer3.backward(bw5)
         bw7 = self.layer2.backward(bw6)
-        bw8 = self.layer1.backward(bw6)
+        bw8 = self.layer1.backward(bw7)
 
         #for par in params:
         #  param = params[par]
