@@ -287,11 +287,7 @@ class MaxPoolingLayer:
                                  y_source:np.minimum(y_source+pool_size, height),
                                  x_source:np.minimum(x_source+pool_size, width), channel]
                         
-                        try:
-                          maximum = np.max(pool)
-                        except ValueError:  #raised if `pool` is empty.
-                          pass
-                        # maximum = np.max(pool)
+                        maximum = np.max(pool)
                         max_count = np.count_nonzero(pool == maximum)
                         argmax = np.argwhere(pool==maximum)
                         mask[argmax[:,0], argmax[:,1]] = d_out[batch, y, x, channel] / max_count
