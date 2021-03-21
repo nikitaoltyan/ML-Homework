@@ -203,9 +203,9 @@ class ConvolutionalLayer:
                 # the parameters (W and B)
                 point = d_out[:, y, x, :]
                 
-                X_after_kernel = X[:, y:y+filter_size, x:x+filter_size, :]
-                X_after_kernel_reshaped = X_after_kernel.reshape((batch_size, -1))
-                X_t = X_after_kernel_reshaped.T
+                Xk = X[:, y:y+self.filter_size, x:x+self.filter_size, :]
+                Xk = Xk.reshape((batch_size, -1))
+                X_t = Xk.T
 
                 d_W = X_t.dot(point)
                 d_W = d_W.reshape((filter_size, filter_size, self.in_channels, out_channels))
