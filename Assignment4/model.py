@@ -34,7 +34,7 @@ class ConvNet:
         padding = 1
         kernel_size = 3
 
-        self.fcl_input = int(height/4)
+        self.fcl_input = 4 * conv2_channels
         self.n_output_classes = n_output_classes
 
         self.layer1 = ConvolutionalLayer(n_channels, conv1_channels, kernel_size, padding)
