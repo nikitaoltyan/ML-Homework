@@ -3,8 +3,8 @@ import numpy as np
 from layers import (
     FullyConnectedLayer, ReLULayer,
     ConvolutionalLayer, MaxPoolingLayer, Flattener,
-    softmax_with_cross_entropy, l2_regularization
-    )
+    softmax_with_cross_entropy, l2_regularization,
+    softmax )
 
 
 class ConvNet:
@@ -96,7 +96,23 @@ class ConvNet:
 
     def predict(self, X):
         # You can probably copy the code from previous assignment
-        raise Exception("Not implemented!")
+        
+        # I copied just an idea of prediction finction, but changed layers.
+        pred = np.zeros(X.shape[0], np.int)
+
+        fw1 = self.layer1.forward(X)
+        fw2 = self.layer2.forward(fw1)
+        fw3 = self.layer3.forward(fw2)
+        fw4 = self.layer4.forward(fw3)
+        fw5 = self.layer5.forward(fw4)
+        fw6 = self.layer6.forward(fw5)
+        fw7 = self.layer7.forward(fw6)
+        fw8 = self.layer8.forward(fw7)
+        # softmax function was added in layers.py and imported.
+        prob = (softmax(fw8))
+        pred = np.argmax(prob, axis = 1)
+        
+        return pred
 
     def params(self):
         # TODO: Aggregate all the params from all the layers
