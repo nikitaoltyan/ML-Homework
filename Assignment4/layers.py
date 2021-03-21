@@ -140,29 +140,38 @@ class ConvolutionalLayer:
 
 
     def forward(self, X):
-        batch_size, height, width, channels = X.shape
-        self.X = X
-        # TODO: Implement maxpool forward pass
-        # Hint: Similarly to Conv layer, loop on
-        # output x/y dimension
-        
-        pool_size = self.pool_size
-        stride = self.stride
-        out_height = 1 + (height - pool_size) // stride
-        out_width = 1 + (width - pool_size) // stride
-        output = np.zeros((batch_size, out_height, out_width, channels))
-        
-        for y in range(out_height):
-            for x in range(out_width):
-                height_start = y * stride
-                height_end = height_start + pool_size
-                width_start = x * stride
-                width_end = width_start + pool_size
-                X_slice = X[:, height_start:height_end, 
-                                      width_start:width_end, :]
-                output[:, y, x, :] = np.max(X_slice, axis=(1, 2))
+        def forward(self, X):
+
+         # Add paddings (zeros)        
+         padding = self.padding
+         if padding > 0:
+           X = np.insert(X, [0], [padding], axis=2)
+           X = np.insert(X, X.shape[2], [padding], axis=2)
+           X = np.insert(X, [0], [padding], axis=1)
+           X = np.insert(X, X.shape[1], [padding], axis=1)
+
+         batch_size, height, width, channels = X.shape
+         self.X = X
+         out_height = height - (self.filter_size - 1)
+         out_width = width - (self.filter_size - 1)
+         result = np.zeros((batch_size, out_height, out_width, self.out_channels))
+         # TODO: Implement forward pass
+         # Hint: setup variables that hold the result
+         # and one x/y location at a time in the loop below
+         # It's ok to use loops for going over width and height
+         # but try to avoid having any other loops
+            
+         W = self.W.value.reshape(-1, self.out_channels)
+         for y in range(out_height):
+             for x in range(out_width):
+                 # TODO: Implement forward pass for specific location
+                 Xk = X[:, y:y+self.filter_size, x:x+self.filter_size, :]
+                 Xk = Xk.reshape((batch_size, -1))
+                 result[:, y, x, :] = Xk.dot(W) + self.B.value
                 
-        return output
+         return result
+        
+        
 
 
     def backward(self, d_out):
@@ -239,24 +248,24 @@ class MaxPoolingLayer:
         # TODO: Implement maxpool forward pass
         # Hint: Similarly to Conv layer, loop on
         # output x/y dimension
-        out_height = int(height/2)
-        out_width = int(width/2)
-        result = np.zeros((batch_size, out_height, out_width, channels))
-        for batch in range(batch_size):
-            for y in range(out_height):
-                for x in range(out_width):
-                    for channel in range(channels):
-                        y_source = y * self.stride
-                        x_source = x * self.stride
-                        pool = X[batch, y_source:y_source+self.pool_size, x_source:x_source+self.pool_size, channel]
-                        try:
-                          maximum = np.max(pool)
-                        except ValueError:  #raised if `pool` is empty.
-                          pass
-                        # maximum = np.max(pool)
-                        result[batch, y, x, channel] = maximum
-                #result[:, y, x, :] = Xk.dot(W) + self.B.value
-        return result
+        
+        pool_size = self.pool_size
+        stride = self.stride
+        out_height = 1 + (height - pool_size) // stride
+        out_width = 1 + (width - pool_size) // stride
+        output = np.zeros((batch_size, out_height, out_width, channels))
+        
+        for y in range(out_height):
+            for x in range(out_width):
+                height_start = y * stride
+                height_end = height_start + pool_size
+                width_start = x * stride
+                width_end = width_start + pool_size
+                X_slice = X[:, height_start:height_end, 
+                                      width_start:width_end, :]
+                output[:, y, x, :] = np.max(X_slice, axis=(1, 2))
+                
+        return output
         
 
     def backward(self, d_out):
