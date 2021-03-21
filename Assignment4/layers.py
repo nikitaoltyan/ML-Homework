@@ -140,8 +140,6 @@ class ConvolutionalLayer:
 
 
     def forward(self, X):
-        def forward(self, X):
-
          # Add paddings (zeros)        
          padding = self.padding
          if padding > 0:
